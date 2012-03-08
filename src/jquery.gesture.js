@@ -78,17 +78,4 @@
 		add.apply(this,arguments);
 	}
 
-	// Override jQuery.event.add
-	var add = $.event.remove;
-	$.event.remove = function(elem, types, handler, data, selector) {
-		var t = types.split(" ");
-		for ( var i = 0; i < t.length; i+=1 ) {
-			if (typeof Gesture.prototype[t[i]] === "function") {
-				var gesture = new Gesture(elem,handler);
-				gesture[t[i]]();
-			}
-		}
-		add.apply(this,arguments);
-	}
-
 }( window, window.document, window.jQuery)
