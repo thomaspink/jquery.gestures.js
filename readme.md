@@ -1,7 +1,7 @@
-#jquery.gesture.js
-is a lightweight mobile gesture library for jQuery.
+#jquery.gestures.js
+is a lightweight mobile gestures library for jQuery.
 
-In this first version jquery.gesture.js provides only two gestures: swipeleft and swiperright.
+In this first version jquery.gestures.js provides only two gestures: swipeleft and swiperright.
 
 More gestures will be added in later releases.
 
@@ -9,7 +9,7 @@ More gestures will be added in later releases.
 This plugin is under development. Don't use it in your productive eviroment!
 
 ##Gestures
-jquery.gesture.js provides these gestures:
+jquery.gestures.js provides these gestures:
 
 ###Swipe Left
 ...Todo
