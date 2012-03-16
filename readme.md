@@ -6,7 +6,7 @@ In this first version jquery.gestures.js provides only two gestures: swipeleft a
 More gestures will be added in later releases.
 
 ##Under Development!
-This plugin is under development. Don't use it in your productive eviroment!
+This plugin is under development. Don't use it in your productive enviroment!
 
 ##Gestures
 jquery.gestures.js provides these gestures:
