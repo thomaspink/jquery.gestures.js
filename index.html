@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"> 
+    <head>
+        <meta charset="utf-8">
+
+        <title>jquery.gestures.js</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+            <div id="stage">
+                <div style="background: deeppink; height: 300px; position: relative;">
+                    <span style="display:block;top:0;left:0;color:white;font-size:100px;line-height:80px;">SWIPE</span>
+                </div>
+            </div>
+        <script src="lib/jquery-1.7.1.js"></script>
+        <script src="src/jquery.gesture.js"></script>
+
+        <script>
+            $('#stage').on('swipeleft','div',function() {
+                $(this).css("background","lightblue");
+            });
+
+            $('#stage').on('swiperight','div',function() {
+                $(this).css("background","#bada55");
+            });
+
+            $('#stage').off('swipeleft','div',function() {
+            });
+        </script>
+    </body>
+</html>

@@ -2,80 +2,249 @@
 	
 	"use strict"
 
+	var Gestures = function() {
 
-	var Gesture = function(elem, handler) {
-
-		if ( !(this instanceof Gesture) ) {
-	        return new Gesture( elem, handler );
+		if ( !(this instanceof Gestures) ) {
+	        return new Gestures();
 	    }
 
-		this.elem = elem;
-		this.handler = handler;
+	    this.events = {
+
+	    	options: {
+	    		nodeIdName: 'data-gestures-id'
+	    	  , swipeXoffset: 100
+	    	  , swipeYoffset: 100
+	    	}
+
+			, swipeleft: {
+
+				attach: function( that, $elem, fn ) {
+
+					var xstart 	= 0
+			  		  , xend 	= 0
+			  		  , ystart 	= 0
+			  		  , yend 	= 0
+			  		  ;
+					
+					that.add( $elem, 'touchstart' , function(event){
+						xstart = event.targetTouches[0].pageX;
+		  				ystart = event.targetTouches[0].pageY;
+					});
+
+					that.add( $elem, 'touchend' , function(event){
+						xend = event.changedTouches[0].pageX;
+						yend = event.changedTouches[0].pageY;
+
+						if( xstart - xend >= that.events.options.swipeXoffset 
+							&& ( ystart-yend <= that.events.options.swipeYoffset 
+								|| yend-ystart <= that.events.options.swipeXoffset ) 
+							) {
+							fn.apply($elem[0]);
+						}
+					});
+
+				}
+
+			  , detach: function( that, $elem, fn ) {
+			  		that.remove ( $elem, 'touchstart' );
+			  		that.remove ( $elem, 'touchend' );
+			  		fn.apply($elem[0]);
+			  	}
+
+			}
+
+			, swiperight: {
+			
+				attach: function( that, $elem, fn ) {
+
+					var xstart 	= 0
+			  		  , xend 	= 0
+			  		  , ystart 	= 0
+			  		  , yend 	= 0
+			  		  ;
+					
+					that.add( $elem, 'touchstart' , function(event){
+						xstart = event.targetTouches[0].pageX;
+		  				ystart = event.targetTouches[0].pageY;
+					});
+
+					that.add( $elem, 'touchend' , function(event){
+						xend = event.changedTouches[0].pageX;
+						yend = event.changedTouches[0].pageY;
+
+						if( xend - xstart >= that.events.options.swipeXoffset 
+							&& ( ystart-yend <= that.events.options.swipeYoffset 
+								|| yend-ystart <= that.events.options.swipeYoffset ) ) {
+							fn.apply($elem[0]);
+						}
+					});
+
+				}
+
+			  , detach: function() {
+			  		that.remove ( $elem, 'touchstart' );
+			  		that.remove ( $elem, 'touchend' );
+			  		fn.apply($elem[0]);
+			  	}
+			
+			}
+
+		}
+
 	}
 
+	Gestures.prototype = {
 
-	Gesture.prototype = {
+		handler: [], id: 0
 
-		  swipeXoffset: 200, swipeYoffset: 100
+		, on: function( elem, types, selector, fn ) {
 
-		, swipeleft: function() {
-			this.swipe(this.handler,"left");
+			var tps = types.split(' ')
+			  , $elem = ( typeof selector === 'string' ) ? $(elem).find(selector) : $(elem);
+			types = "";
+
+			for( var i=0, max = tps.length; i<max; i+=1 ) {
+				if( this.events.hasOwnProperty(tps[i]) && typeof this.events[tps[i]].attach == 'function' ) {
+					this.events[tps[i]].attach( this, $elem, fn );
+				} else {
+					types += ( types.length ? ' ' : '' ) + tps[i];
+				}
+			}
+
+			return types;
+		}
+
+		, add: function( $elem, type, fn ) {
+			
+			var id = $elem[0].getAttribute(this.events.options.nodeIdName) 
+					 ? parseInt($elem[0].getAttribute(this.events.options.nodeIdName),10) : this.id++;
+
+			if( this.handler[id] ) {
+
+				if( this.handler[id][type] ) {
+
+					this.handler[id][type].callbacks.push(fn);
+
+				} else {
+
+					this.handler[id][type] = {
+						callbacks: []
+					};
+					this.handler[id][type].callbacks.push(fn);
+
+					this.addListener( $elem[0], type );
+
+				}
+
+			} else {
+				
+				var event = {};
+				event[type] = {
+					callbacks: []
+				};
+				event[type].callbacks.push(fn);
+				this.handler[id] = event;
+
+				console.log(type);
+
+				$elem[0].setAttribute(this.events.options.nodeIdName,id);
+				
+				this.addListener( $elem[0], type );
+			}
+
+		}
+
+		, addListener: function( elem, type ) {
+
+			var that = this;
+
+			elem.addEventListener(type, function(event) {
+
+				var i = 0
+				  , callbacks = that.handler[parseInt(this.getAttribute(that.events.options.nodeIdName),10)][type].callbacks
+				  , max = callbacks.length;
+
+				for ( i; i< max; i+=1 ) {
+					callbacks[i](event);
+				}
+
+			});
+
+		}
+
+		, off: function( elem, types, selector, fn ) {
+
+			var tps = types.split(' ')
+			  , $elem = ( typeof selector === 'string' ) ? $(elem).find(selector) : $(elem);
+			types = "";
+
+			for( var i=0, max = tps.length; i<max; i+=1 ) {
+				if( this.events.hasOwnProperty(tps[i]) && typeof this.events[tps[i]].attach == 'function' ) {
+					this.events[tps[i]].detach( this, $elem, fn );
+				} else {
+					types += ( types.length ? ' ' : '' ) + tps[i];
+				}
+			}
+
+			return types;
+
+		}
+
+		, remove: function( $elem, type ) {
+
+			// (!)ToDo(!)
+
+		}
+
+		, isTouch: function() {
+			return ('ontouchstart' in window) 
+				|| window.DocumentTouch && document instanceof DocumentTouch;
 		}
 		
-	  	, swiperight: function() {
-	  		this.swipe(this.handler,"right");
-		}
-
-	  	, swipe: function(callback,direction) {
-
-	  		var that = this
-	  		  , xstart 	= 0
-	  		  , xend 	= 0
-	  		  , ystart 	= 0
-	  		  , yend 	= 0
-	  		  ;
-
-	  		this.elem.addEventListener("touchstart", function(event) {
-	  			xstart = event.targetTouches[0].pageX;
-	  			ystart = event.targetTouches[0].pageY;
-			}, false);
-
-			this.elem.addEventListener("touchend", function(event) {
-				xend = event.changedTouches[0].pageX;
-				yend = event.changedTouches[0].pageY;
-				direction = direction === "right" ? direction = "right" : direction = "left";
-
-				if(xstart - xend >= that.swipeXoffset 
-				&& (ystart-yend <= that.swipeYoffset || yend-ystart <= that.swipeYoffset) 
-				&& direction === "left" ) {
-					if(typeof callback == "function") {
-						callback();
-					}
-				}
-
-				if(xend - xstart >= that.swipeXoffset 
-				&& (ystart-yend <= that.swipeYoffset || yend-ystart <= that.swipeYoffset) 
-				&& direction === "right" ) {
-					if(typeof callback === "function") {
-						callback();
-					}
-				}
-			}, false);
-	  	}
 	}
 
+	var on = false;
+	typeof $.fn.on === 'function' && ( on = $.fn.on );
 
-	// Override jQuery.event.add
-	var add = $.event.add;
-	$.event.add = function(elem, types, handler, data, selector) {
-		var t = types.split(" ");
-		for ( var i = 0; i < t.length; i+=1 ) {
-			if (typeof Gesture.prototype[t[i]] === "function") {
-				var gesture = new Gesture(elem,handler);
-				gesture[t[i]]();
+	$.fn.on = function( types, selector, data, fn, one ) {
+
+		if(Gestures().isTouch()) {
+
+			if( selector === 'function' ) {
+				fn = selector;
+				selector = undefined;
+			} else {
+				fn = ( typeof data === 'function' ) ? data : fn;
 			}
+
+			window.gestures || ( window.gestures = new Gestures() );
+
+			typeof types === 'string' 
+			&& ( types = window.gestures.on( this, types, selector, fn ) );
+
 		}
-		add.apply(this,arguments);
+
+		on && types.length && on.apply( this,arguments );
 	}
 
-}( window, window.document, window.jQuery)
+	var off = false;
+	typeof $.fn.off === 'function' && ( off = $.fn.off );
+
+	$.fn.off = function( types, selector, fn ) {
+		
+		if(Gestures().isTouch()) {
+			
+			if( selector === 'function' ) {
+				fn = selector;
+				selector = undefined;
+			}
+
+			typeof types === 'string' && window.gestures 
+			&& ( types = window.gestures.off( this, types, selector, fn ) );
+
+		}
+
+		off && types.length && off.apply( this,arguments );
+	}
+
+}( window, window.document, window.jQuery )
