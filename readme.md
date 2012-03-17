@@ -21,6 +21,7 @@ Include jquery.gestures.js in your html file - after jQuery!
 
 Thats it.
 Now you can use these gestures like that:
+
 ``` javascript
 $('#foo').on( 'gesture', '.bar', function() {
 	// Your code goes here ...
@@ -33,6 +34,7 @@ jquery.gestures.js provides the following gestures:
 
 ###Swipe Left
 Usage:
+
 ``` javascript
 $('#foo').on( 'swipeleft', '.bar', function() {
 	// Your code goes here ...
@@ -41,6 +43,7 @@ $('#foo').on( 'swipeleft', '.bar', function() {
 
 ###Swipe Right
 Usage:
+
 ``` javascript
 $('#foo').on( 'swipeleft', '.bar', function() {
 	// Your code goes here ...
