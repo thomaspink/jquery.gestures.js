@@ -14,6 +14,7 @@ This plugin is under development. Don't use it in your productive enviroment!
 
 ##Usage
 Include jquery.gestures.js in your html file - after jQuery!
+
 ``` html
 <script src="jquery.gestures.js"></script>
 ```
