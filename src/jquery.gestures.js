@@ -26,12 +26,12 @@
 			  		  , yend 	= 0
 			  		  ;
 					
-					that.add( $elem, 'touchstart' , function(event){
+					that.add( $elem, 'swipeleft', 'touchstart' , function(event){
 						xstart = event.targetTouches[0].pageX;
 		  				ystart = event.targetTouches[0].pageY;
 					});
 
-					that.add( $elem, 'touchend' , function(event){
+					that.add( $elem, 'swipeleft', 'touchend' , function(event){
 						xend = event.changedTouches[0].pageX;
 						yend = event.changedTouches[0].pageY;
 
@@ -63,12 +63,12 @@
 			  		  , yend 	= 0
 			  		  ;
 					
-					that.add( $elem, 'touchstart' , function(event){
+					that.add( $elem, 'swiperight', 'touchstart' , function(event){
 						xstart = event.targetTouches[0].pageX;
 		  				ystart = event.targetTouches[0].pageY;
 					});
 
-					that.add( $elem, 'touchend' , function(event){
+					that.add( $elem, 'swiperight', 'touchend' , function(event){
 						xend = event.changedTouches[0].pageX;
 						yend = event.changedTouches[0].pageY;
 
@@ -114,23 +114,27 @@
 			return types;
 		}
 
-		, add: function( $elem, type, fn ) {
+		, add: function( $elem, event, type, fn ) {
 			
 			var id = $elem[0].getAttribute(this.events.options.nodeIdName) 
 					 ? parseInt($elem[0].getAttribute(this.events.options.nodeIdName),10) : this.id++;
+
+			var callback = {};
+			callback[event] = fn;
 
 			if( this.handler[id] ) {
 
 				if( this.handler[id][type] ) {
 
-					this.handler[id][type].callbacks.push(fn);
+					this.handler[id][type].callbacks.push(callback);
 
 				} else {
 
 					this.handler[id][type] = {
 						callbacks: []
 					};
-					this.handler[id][type].callbacks.push(fn);
+
+					this.handler[id][type].callbacks.push(callback);
 
 					this.addListener( $elem[0], type );
 
@@ -142,10 +146,9 @@
 				event[type] = {
 					callbacks: []
 				};
-				event[type].callbacks.push(fn);
-				this.handler[id] = event;
 
-				console.log(type);
+				event[type].callbacks.push(callback);
+				this.handler[id] = event;
 
 				$elem[0].setAttribute(this.events.options.nodeIdName,id);
 				
@@ -165,7 +168,10 @@
 				  , max = callbacks.length;
 
 				for ( i; i< max; i+=1 ) {
-					callbacks[i](event);
+					//callbacks[i][0](event);
+					for( var callback in callbacks[i] ) {
+						callbacks[i][callback](event);
+					}
 				}
 
 			});
@@ -197,11 +203,19 @@
 		}
 
 		, isTouch: function() {
+			/*
 			return ('ontouchstart' in window) 
 				|| window.DocumentTouch && document instanceof DocumentTouch;
+			*/
+			return true;
 		}
 		
 	}
+
+
+	/*
+	 *	Create on method or override jQuery.on
+	 */
 
 	var on = false;
 	typeof $.fn.on === 'function' && ( on = $.fn.on );
@@ -226,6 +240,11 @@
 
 		on && types.length && on.apply( this,arguments );
 	}
+
+
+	/*
+	 *	Create off method or override jQuery.off
+	 */
 
 	var off = false;
 	typeof $.fn.off === 'function' && ( off = $.fn.off );
