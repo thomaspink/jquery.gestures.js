@@ -46,8 +46,8 @@
 				}
 
 			  , detach: function( that, $elem, fn ) {
-			  		that.remove ( $elem, 'touchstart' );
-			  		that.remove ( $elem, 'touchend' );
+			  		that.remove ( $elem, 'swipeleft', 'touchstart' );
+			  		that.remove ( $elem, 'swipeleft', 'touchend' );
 			  		fn.apply($elem[0]);
 			  	}
 
@@ -82,8 +82,8 @@
 				}
 
 			  , detach: function() {
-			  		that.remove ( $elem, 'touchstart' );
-			  		that.remove ( $elem, 'touchend' );
+			  		that.remove ( $elem, 'swiperight', 'touchstart' );
+			  		that.remove ( $elem, 'swiperight', 'touchend' );
 			  		fn.apply($elem[0]);
 			  	}
 			
@@ -196,15 +196,28 @@
 
 		}
 
-		, remove: function( $elem, type ) {
+		, remove: function( $elem, type, event ) {
 
-			// (!)ToDo(!)
+			var id = parseInt($elem[0].getAttribute(this.events.options.nodeIdName),10)
+			  , callbacks = this.handler[id][event].callbacks
+			  ;
+
+			for(var i = 0; i < callbacks.length; i+=1){
+				if( callbacks[i].hasOwnProperty(type) ) {
+					delete callbacks[i][type];
+				}
+			}
+
+			if( !callbacks.length ) {
+				delete this.handler[id][event];
+			}
 
 		}
 
 		, isTouch: function() {
-			return ('ontouchstart' in window) 
-				|| window.DocumentTouch && document instanceof DocumentTouch;
+			/*return ('ontouchstart' in window) 
+				|| window.DocumentTouch && document instanceof DocumentTouch;*/
+			return true;
 		}
 		
 	}
