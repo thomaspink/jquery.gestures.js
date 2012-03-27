@@ -101,6 +101,7 @@
 
 			var tps = types.split(' ')
 			  , $elem = ( typeof selector === 'string' ) ? $(elem).find(selector) : $(elem);
+			
 			types = "";
 
 			for( var i=0, max = tps.length; i<max; i+=1 ) {
@@ -117,9 +118,10 @@
 		, add: function( $elem, event, type, fn ) {
 			
 			var id = $elem[0].getAttribute(this.events.options.nodeIdName) 
-					 ? parseInt($elem[0].getAttribute(this.events.options.nodeIdName),10) : this.id++;
+					 ? parseInt($elem[0].getAttribute(this.events.options.nodeIdName),10) : this.id++
+			  , callback = {}
+			  ;
 
-			var callback = {};
 			callback[event] = fn;
 
 			if( this.handler[id] ) {
