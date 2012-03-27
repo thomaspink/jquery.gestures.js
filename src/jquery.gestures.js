@@ -81,7 +81,7 @@
 
 				}
 
-			  , detach: function() {
+			  , detach: function(that, $elem, fn ) {
 			  		that.remove ( $elem, 'swiperight', 'touchstart' );
 			  		that.remove ( $elem, 'swiperight', 'touchend' );
 			  		fn.apply($elem[0]);
@@ -168,7 +168,6 @@
 				  , max = callbacks.length;
 
 				for ( i; i< max; i+=1 ) {
-					//callbacks[i][0](event);
 					for( var callback in callbacks[i] ) {
 						callbacks[i][callback](event);
 					}
@@ -204,20 +203,20 @@
 
 			for(var i = 0; i < callbacks.length; i+=1){
 				if( callbacks[i].hasOwnProperty(type) ) {
-					delete callbacks[i][type];
+					callbacks.splice(i,1);
 				}
 			}
 
 			if( !callbacks.length ) {
+				$elem[0].removeEventListener(event);
 				delete this.handler[id][event];
 			}
 
 		}
 
 		, isTouch: function() {
-			/*return ('ontouchstart' in window) 
-				|| window.DocumentTouch && document instanceof DocumentTouch;*/
-			return true;
+			return ('ontouchstart' in window) 
+				|| window.DocumentTouch && document instanceof DocumentTouch;
 		}
 		
 	}
