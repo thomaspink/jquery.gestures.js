@@ -277,4 +277,4 @@
 		off && types.length && off.apply( this,arguments );
 	}
 
-}( window, window.document, window.jQuery )
+}( window, window.document, window.jQuery );
