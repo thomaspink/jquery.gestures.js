@@ -16,6 +16,42 @@
 	    	  , swipeYoffset: 100
 	    	}
 
+	    	, touchstart: {
+
+	    		attach: function( that, $elem, fn ) {
+	    			that.add( $elem, 'touchstart', 'touchstart' , function(event){
+	    				var data = {
+	    					x: event.targetTouches[0].pageX
+	    				  , y: event.targetTouches[0].pageY
+	    				}
+		  				fn.apply($elem[0], [ data ]);
+					});
+	    		}
+
+	    	  , detach: function( that, $elem, fn ) {
+			  		that.remove ( $elem, 'swipeleft', 'touchstart' );
+			  		fn.apply($elem[0]);
+			  	}
+	    	}
+
+	    	, touchend: {
+
+	    		attach: function( that, $elem, fn ) {
+	    			that.add( $elem, 'touchend', 'touchend' , function(event){
+	    				var data = {
+	    					x: event.changedTouches[0].pageX
+	    				  , y: event.changedTouches[0].pageY
+	    				}
+		  				fn.apply($elem[0], [ data ]);
+					});
+	    		}
+
+	    	  , detach: function( that, $elem, fn ) {
+			  		that.remove ( $elem, 'touchend', 'touchend' );
+			  		fn.apply($elem[0]);
+			  	}
+	    	}
+
 			, swipeleft: {
 
 				attach: function( that, $elem, fn ) {
@@ -217,8 +253,10 @@
 		}
 
 		, isTouch: function() {
-			return ('ontouchstart' in window) 
+			/*return ('ontouchstart' in window) 
 				|| window.DocumentTouch && document instanceof DocumentTouch;
+				*/
+			return true;
 		}
 		
 	}
