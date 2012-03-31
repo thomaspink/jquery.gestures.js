@@ -12,18 +12,22 @@
                 <div style="background: deeppink; height: 300px; position: relative;">
                     <span style="display:block;top:0;left:0;color:white;font-size:100px;line-height:80px;">SWIPE</span>
                 </div>
+                <div style="background: blue; height: 300px; position: relative; margin-top: 30px;">
+                    <span style="display:block;top:0;left:0;color:white;font-size:100px;line-height:80px;">SWIPE</span>
+                </div>
             </div>
         <script src="lib/jquery-1.7.1.js"></script>
         <script src="src/jquery.gestures.js"></script>
 
         <script>
-            $('#stage').on('swipeleft','div',function() {
+            $('#stage').on('swipeleft','div:eq(0)',function( event ) {
                 $(this).css("background","lightblue");
             });
 
-            $('#stage').on('swiperight','div',function() {
+            $('#stage').on('swiperight','div:eq(0)',function( event ) {
                 $(this).css("background","#bada55");
             });
+
         </script>
     </body>
 </html>
