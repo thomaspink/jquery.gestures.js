@@ -235,7 +235,7 @@
 
 		if(Gestures().isTouch()) {
 
-			if( selector === 'function' ) {
+			if( typeof selector === 'function' ) {
 				fn = selector;
 				selector = undefined;
 			} else {
@@ -264,7 +264,7 @@
 		
 		if(Gestures().isTouch()) {
 			
-			if( selector === 'function' ) {
+			if( typeof selector === 'function' ) {
 				fn = selector;
 				selector = undefined;
 			}
