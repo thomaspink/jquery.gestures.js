@@ -1,3 +1,6 @@
+### OUTDATED!
+Have a look on [hammerjs](http://hammerjs.github.io/) as an alternative or use native events!
+
 #jquery.gestures.js
 is a lightweight mobile gestures library for jQuery.
 
